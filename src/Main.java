@@ -1,3 +1,5 @@
+import Utils.API.PersonGenerator;
+
 import java.util.Scanner;
 
 import static Utils.CPFGenerator.gerarCPF;
@@ -8,6 +10,11 @@ import static Utils.CNPJValidator.validarCNPJ;
 public class Main {
 
     public static void main(String[] args) {
+        PersonGenerator generator = new PersonGenerator();
+
+        String pessoa = generator.personGenerate();
+
+        System.out.println(pessoa);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -20,9 +27,16 @@ public class Main {
             System.out.println("4 - Validar CNPJ");
             System.out.println("0 - Sair");
             System.out.print("Escolha: ");
+            int opcao;
+            try{
 
-            int opcao = scanner.nextInt();
-            scanner.nextLine();
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+            }catch (Exception e){
+                System.out.println("Erro ao digitar a opção.");
+                scanner.nextLine();
+                continue;
+            }
 
             switch (opcao) {
 
@@ -60,7 +74,6 @@ public class Main {
                     System.out.println("Programa encerrado.");
                     scanner.close();
                     return;
-
                 default:
                     System.out.println("Opção inválida!");
             }

@@ -9,15 +9,18 @@ public class PersonCustomer extends Customer {
     private LocalDate birthDate;
     private String profession;
 
-    public PersonCustomer(String name,
+    public PersonCustomer(String fistName,
+                          String lastName,
                                LocalDate dateRegister,
-                               LocalDate legalOrigin,
+                               String cep,
+                               String email,
+                               String tell,
                                String cpf,
                                String rg,
                                LocalDate birthDate,
                                String profession) {
 
-        super(name, dateRegister, legalOrigin);
+        super(fistName, lastName, dateRegister, cep, email, tell);
 
         this.cpf = cpf;
         this.rg = rg;

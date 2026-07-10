@@ -10,16 +10,19 @@ public class CompanyCustomer extends Customer {
     private String stateRegistration;
     private LocalDate foundationDate;
 
-    public CompanyCustomer(String name,
+    public CompanyCustomer(String firstName,
+                                 String lastName,
                                  LocalDate dateRegister,
-                                 LocalDate legalOrigin,
+                                 String cep,
+                                 String email,
+                                 String tell,
                                  String cnpj,
                                  String corporateName,
                                  String tradeName,
                                  String stateRegistration,
                                  LocalDate foundationDate) {
 
-        super(name, dateRegister, legalOrigin);
+        super(firstName, lastName, dateRegister, cep, email, tell);
 
         this.cnpj = cnpj;
         this.corporateName = corporateName;
