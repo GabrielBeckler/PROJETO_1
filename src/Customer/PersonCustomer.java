@@ -28,6 +28,10 @@ public class PersonCustomer extends Customer {
         this.profession = profession;
     }
 
+//    public PersonCustomer(String firstName, String lastName, LocalDate now, String cep, String email, String phone, String cpf, LocalDate birthDate) {
+//        super();
+//    }
+
     public String getCpf() {
         return cpf;
     }
@@ -59,4 +63,22 @@ public class PersonCustomer extends Customer {
     public void setProfession(String profession) {
         this.profession = profession;
     }
+
+    public int getAge() {
+        return LocalDate.now().getYear() - birthDate.getYear();
+    }
+
+    public boolean isAdult() {
+        return getAge() > 18;
+    }
+
+    public void changeProfession(String profession){
+        this.profession = profession;
+    }
+
+    public String getMaskedCpf() {
+        return cpf.substring(0, 3) + ".***.***-" + cpf.substring(9);
+    }
+
+
 }

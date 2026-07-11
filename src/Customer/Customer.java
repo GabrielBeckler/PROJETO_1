@@ -69,4 +69,40 @@ public class Customer {
     public String getFistName() {return firstName; }
 
     public void setFistName(String firstName) { this.firstName = firstName; }
+
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+
+    public void updateContact(String email, String tell){
+        this.email = email;
+        this.tell = tell;
+    }
+
+    public void updateCep(String cep){
+        this.cep = cep;
+    }
+
+    public void updateDateRegister(){
+        this.dateRegister = dateRegister;
+    }
+
+    public boolean hasEmail(){
+        return email != null && !email.isBlank();
+    }
+
+    public boolean hasTell(){
+        return tell != null && !tell.isBlank();
+    }
+
+    public void showCostumer() {
+        System.out.println("ID: " + id);
+        System.out.println("Name: " + getFullName());
+        System.out.println("Email: " + email);
+        System.out.println("Telephone: " + tell);
+        System.out.println("CEP: " + cep);
+        System.out.println("Registration date: " + dateRegister);
+    }
+
+
 }

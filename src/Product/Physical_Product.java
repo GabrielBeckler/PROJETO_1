@@ -99,4 +99,12 @@ public class Physical_Product extends Product {
     public void setWarehouseLocation(String warehouseLocation) {
         this.warehouseLocation = warehouseLocation;
     }
+
+    public void increaseStock(int Quantity) {
+
+    }
+
+
+
+
 }

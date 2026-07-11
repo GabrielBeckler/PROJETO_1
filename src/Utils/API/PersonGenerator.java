@@ -1,6 +1,8 @@
 package Utils.API;
 
 //importa a classe para criar uma URL
+import Customer.PersonCustomer;
+import Utils.CPFGenerator;
 import jdk.jshell.spi.ExecutionControlProvider;
 
 import java.net.URI;
@@ -10,6 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 //importa a classe que recebe a resposta do api
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 
 public class PersonGenerator {
     public String personGenerate() {
@@ -31,6 +34,33 @@ public class PersonGenerator {
             e.printStackTrace();
             return "Erro ao buscar pessoa";
         }
+    }
+    public PersonCustomer generatePersonCustomer() {
 
-}
+        String json = personGenerate();
+        
+        String firstName = "";
+        String lastName = "";
+        String email = "";
+        String phone = "";
+        String cep = "";
+        LocalDate birthDate = LocalDate.now();
+
+        String cpf = CPFGenerator.gerarCPF();
+        String rg = "123456789";
+        String profession = "Não informado";
+
+        return new PersonCustomer(
+                firstName,
+                lastName,
+                LocalDate.now(),
+                cep,
+                email,
+                phone,
+                cpf,
+                rg,
+                birthDate,
+                profession
+        );
+    }
 }

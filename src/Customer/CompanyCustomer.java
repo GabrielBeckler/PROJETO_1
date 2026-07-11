@@ -70,4 +70,18 @@ public class CompanyCustomer extends Customer {
     public void setFoundationDate(LocalDate foundationDate) {
         this.foundationDate = foundationDate;
     }
+
+    public int getAgeCompany() {
+        return LocalDate.now().getYear() - foundationDate.getYear();
+    }
+
+    public boolean isOldCompany() {
+        return getAgeCompany() >= 10;
+    }
+
+    public String getCompanyName() {
+        return corporateName + " - " + tradeName;
+    }
+
+
 }
