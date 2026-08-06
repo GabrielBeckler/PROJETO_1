@@ -14,9 +14,13 @@ public class Order {
     private Customer customer;
     private ArrayList<OrderItem> items;
     private double totalValue;
-    private String status;
+    private OrderStatus status;
 
-    public Order(LocalDate dateOrder, Customer customer, String status) {
+    public Order(LocalDate dateOrder, Customer customer) {
+        this(dateOrder, customer, OrderStatus.CREATED);
+    }
+
+    public Order(LocalDate dateOrder, Customer customer, OrderStatus status) {
 
         this.id = countId++;
         this.dateOrder = dateOrder;
@@ -24,6 +28,11 @@ public class Order {
         this.status = status;
         this.items = new ArrayList<>();
         this.totalValue = 0;
+    }
+
+    @Deprecated
+    public Order(LocalDate dateOrder, Customer customer, String status) {
+        this(dateOrder, customer, OrderStatus.valueOf(status.toUpperCase()));
     }
 
     public int getId() {
@@ -54,11 +63,45 @@ public class Order {
         return totalValue;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public void addItem(OrderItem item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item cannot be null.");
+        }
+        items.add(item);
+        item.setOrder(this);
+        calculateTotal();
+    }
+
+    public void removeItem(OrderItem item) {
+        if (items.remove(item)) {
+            item.setOrder(null);
+            calculateTotal();
+        }
+    }
+
+    public void calculateTotal() {
+        totalValue = 0;
+        for (OrderItem item : items) {
+            totalValue += item.getSubtotal();
+        }
+    }
+
+    public void finishOrder() {
+        if (items.isEmpty()) {
+            throw new IllegalStateException("It is not possible to finish an order without items.");
+        }
+        status = OrderStatus.PAYMENT_PENDING;
+    }
+
+    public void cancelOrder() {
+        status = OrderStatus.CANCELLED;
     }
 }

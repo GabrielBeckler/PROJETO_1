@@ -1,4 +1,6 @@
-package Product;
+package Product.Category;
+
+import Product.Product;
 
 public class Ebook extends Product {
 

@@ -6,13 +6,15 @@ public class OrderItem {
     private Product product;
     private int quantity;
     private double unitPrice;
-    private double subtotal;
     private Order order;
 
-    public OrderItem(Product product, int quantity, double unitPrice){
+    public OrderItem(Product product, int quantity) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null.");
+        }
         this.product = product;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
+        setQuantity(quantity);
+        setUnitPrice(product.getPrice());
     }
 
     public Product getProduct() {
@@ -28,6 +30,9 @@ public class OrderItem {
     }
 
     public void setQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than zero.");
+        }
         this.quantity = quantity;
     }
 
@@ -36,11 +41,14 @@ public class OrderItem {
     }
 
     public void setUnitPrice(double unitPrice) {
+        if (unitPrice < 0) {
+            throw new IllegalArgumentException("Unit price cannot be negative.");
+        }
         this.unitPrice = unitPrice;
     }
 
     public double getSubtotal() {
-        return subtotal;
+        return quantity * unitPrice;
     }
 
     public Order getOrder() {

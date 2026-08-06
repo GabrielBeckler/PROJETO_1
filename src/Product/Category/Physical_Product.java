@@ -1,4 +1,6 @@
-package Product;
+package Product.Category;
+
+import Product.Product;
 
 public class Physical_Product extends Product {
 

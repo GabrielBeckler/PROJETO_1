@@ -3,7 +3,7 @@ package Customer;
 import java.time.LocalDate;
 
 public class Customer {
-    private static int contadorId = 1;
+    private static int accountantId = 1;
     private final int id;
     private String firstName;
     private String lastName;
@@ -19,7 +19,7 @@ public class Customer {
                      String cep, String email, String tell){
         this.firstName = firstName;
         this.lastName = lastName;
-        this.id = contadorId ++;
+        this.id = accountantId ++;
         this.dateRegister = dateRegister;
         this.cep = cep;
         this.email = email;

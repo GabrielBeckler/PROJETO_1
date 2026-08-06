@@ -1,82 +1,33 @@
-import Utils.API.PersonGenerator;
+import Customer.Customer;
+import Order.Order;
+import Order.OrderItem;
+import Payment.Payment;
+import Payment.PaymentMethod;
+import Product.Product;
 
-import java.util.Scanner;
-
-import static Utils.CPFGenerator.gerarCPF;
-import static Utils.CPFValidator.validarCPF;
-import static Utils.CNPJGenerator.gerarCNPJ;
-import static Utils.CNPJValidator.validarCNPJ;
+import java.time.LocalDate;
 
 public class Main {
 
     public static void main(String[] args) {
-        PersonGenerator generator = new PersonGenerator();
+        Customer customer = new Customer("Gabriel", "Silva", LocalDate.now(),
+                "01001-000", "gabriel@email.com", "11999999999");
+        Product product = new Product("Notebook", "NOTE-001", "Notebook for work", 2500.00);
 
-        String pessoa = generator.personGenerate();
+        Order order = new Order(LocalDate.now(), customer);
+        OrderItem item = new OrderItem(product, 2);
+        order.addItem(item);
+        order.finishOrder();
 
-        System.out.println(pessoa);
+        Payment payment = new Payment("PAY-001", LocalDate.now().toString(), order,
+                order.getTotalValue(), PaymentMethod.PIX);
+        payment.payOrder();
 
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-
-            System.out.println("\n===== GERADOR E VALIDADOR =====");
-            System.out.println("1 - Gerar CPF");
-            System.out.println("2 - Validar CPF");
-            System.out.println("3 - Gerar CNPJ");
-            System.out.println("4 - Validar CNPJ");
-            System.out.println("0 - Sair");
-            System.out.print("Escolha: ");
-            int opcao;
-            try{
-
-                opcao = scanner.nextInt();
-                scanner.nextLine();
-            }catch (Exception e){
-                System.out.println("Erro ao digitar a opção.");
-                scanner.nextLine();
-                continue;
-            }
-
-            switch (opcao) {
-
-                case 1:
-                    System.out.println("\nCPF Gerado: " + gerarCPF());
-                    break;
-
-                case 2:
-                    System.out.print("\nDigite o CPF: ");
-                    String cpf = scanner.nextLine();
-
-                    if (validarCPF(cpf)) {
-                        System.out.println("CPF válido!");
-                    } else {
-                        System.out.println("CPF inválido!");
-                    }
-                    break;
-
-                case 3:
-                    System.out.println("\nCNPJ Gerado: " + gerarCNPJ());
-                    break;
-
-                case 4:
-                    System.out.print("\nDigite o CNPJ: ");
-                    String cnpj = scanner.nextLine();
-
-                    if (validarCNPJ(cnpj)) {
-                        System.out.println("CNPJ válido!");
-                    } else {
-                        System.out.println("CNPJ inválido!");
-                    }
-                    break;
-
-                case 0:
-                    System.out.println("Programa encerrado.");
-                    scanner.close();
-                    return;
-                default:
-                    System.out.println("Opção inválida!");
-            }
-        }
+        System.out.println("Cliente: " + customer.getFistName());
+        System.out.println("Produto: " + product.getName());
+        System.out.println("Quantidade: " + item.getQuantity());
+        System.out.printf("Total: R$%.0f%n", order.getTotalValue());
+        System.out.println("Pedido: " + order.getStatus());
+        System.out.println("Pagamento: " + payment.getStatus());
     }
 }

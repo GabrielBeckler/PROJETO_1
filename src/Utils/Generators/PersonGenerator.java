@@ -1,9 +1,7 @@
-package Utils.API;
+package Utils.Generators;
 
 //importa a classe para criar uma URL
 import Customer.PersonCustomer;
-import Utils.CPFGenerator;
-import jdk.jshell.spi.ExecutionControlProvider;
 
 import java.net.URI;
 //importa o cliente http do java (crud)

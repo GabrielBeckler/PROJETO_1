@@ -1,4 +1,4 @@
-package Utils;
+package Utils.Generators;
 
 import java.util.Random;
 

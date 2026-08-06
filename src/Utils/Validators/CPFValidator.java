@@ -1,4 +1,4 @@
-package Utils;
+package Utils.Validators;
 
 public class CPFValidator {
     public static boolean validarCPF(String cpf) {
