@@ -1,12 +1,3 @@
-namespace DefaultNamespace;
-
-import Customer.Customer;
-import Order.Order;
-import Order.OrderItem;
-import Payment.Payment;
-import Payment.PaymentMethod;
-import Product.Product;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -246,3 +237,5 @@ public class MainMenu {
         System.out.print("Digite o ID do cliente que deseja REMOVER: ");
         int id = sc.nextInt();
         sc.nextLine();
+    }
+}
