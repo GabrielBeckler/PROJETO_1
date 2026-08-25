@@ -92,7 +92,7 @@ public class Payment {
 
     public void payOrder() {
         if (isPaid()) {
-            throw new IllegalStateException("Payment has already been completed.");
+            throw new IllegalStateException("java.Payment has already been completed.");
         }
 
         status = PaymentStatus.PAID;

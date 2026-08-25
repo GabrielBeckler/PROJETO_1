@@ -3,14 +3,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.time.LocalDate;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class MainMenu {
 
-    static final String URL = "jdbc:mysql://127.0.0.1:3306/projeto1";
-    static final String USER = "gbeck_dev";
-    static final String PASS = "MinhaSenha123";
+    static Dotenv dotenv = Dotenv.load();
+
+    static final String URL = dotenv.get("DB_URL");
+    static final String USER = dotenv.get("DB_USER");
+    static final String PASS = dotenv.get("DB_PASSWORD");
 
     static Scanner sc = new Scanner(System.in);
 
@@ -182,12 +187,23 @@ public class MainMenu {
 
     private static void createClient() throws SQLException {
 
-        System.out.println(
-                "Tipo de Cliente: [1] Pessoa Física (PERSON) ou [2] Pessoa Jurídica (COMPANY)?"
-        );
+        int type = 0;
+        while (true){
+            System.out.println("Tipo de Cliente: [1] Pessoa Física (PERSON) ou [2] Pessoa Jurídica (COMPANY)?");
+            try {
+                String input = sc.nextLine();
+                type = Integer.parseInt(input);
 
-        int type = sc.nextInt();
-        sc.nextLine();
+                if (type == 1 || type == 2 ) {
+                    break;
+                }
+                System.out.printf("Erro. escolha apenas 1 ou 2");
+            } catch (NumberFormatException e) {
+                // Se o usuário digitou algo diferente (ex: letra ou texto)
+                System.out.println("Erro: Você não digitou um número válido. Tente de novo.");
+                sc.next(); // Descarta a entrada inválida para evitar loop infinito
+            }
+        }
 
         String typeStr = (type == 2) ? "COMPANY" : "PERSON";
 

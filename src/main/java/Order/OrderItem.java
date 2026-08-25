@@ -10,7 +10,7 @@ public class OrderItem {
 
     public OrderItem(Product product, int quantity) {
         if (product == null) {
-            throw new IllegalArgumentException("Product cannot be null.");
+            throw new IllegalArgumentException("java.Product cannot be null.");
         }
         this.product = product;
         setQuantity(quantity);
