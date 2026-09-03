@@ -3,6 +3,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.time.LocalDate;
@@ -186,38 +187,45 @@ public class MainMenu {
     // CREATE CLIENT
 
     private static void createClient() throws SQLException {
-
         int type = 0;
-        while (true){
+
+        // 1. TRATAMENTO DO TIPO DE CLIENTE (Loop até digitar 1 ou 2)
+        while (true) {
             System.out.println("Tipo de Cliente: [1] Pessoa Física (PERSON) ou [2] Pessoa Jurídica (COMPANY)?");
             try {
-                String input = sc.nextLine();
+                String input = sc.nextLine(); // Lê como String para evitar problemas de buffer
                 type = Integer.parseInt(input);
 
-                if (type == 1 || type == 2 ) {
-                    break;
+                if (type == 1 || type == 2) {
+                    break; // Entrada válida, sai do loop
                 }
-                System.out.printf("Erro. escolha apenas 1 ou 2");
+                System.out.println("Erro: Escolha apenas 1 ou 2.");
             } catch (NumberFormatException e) {
-                // Se o usuário digitou algo diferente (ex: letra ou texto)
                 System.out.println("Erro: Você não digitou um número válido. Tente de novo.");
-                sc.next(); // Descarta a entrada inválida para evitar loop infinito
             }
         }
 
         String typeStr = (type == 2) ? "COMPANY" : "PERSON";
 
-
         // DADOS GERAIS
-
         System.out.print("Nome: ");
         String firstName = sc.nextLine();
 
         System.out.print("Sobrenome: ");
         String lastName = sc.nextLine();
 
-        System.out.print("CEP: ");
-        String cep = sc.nextLine();
+        String cep;
+
+        while (true) {
+            System.out.print("Digite o CEP (8 números): ");
+            cep = sc.nextLine().trim();
+
+            if (cep.matches("\\d{8}")) {
+                break;
+            }
+
+            System.out.println("Erro: o CEP deve conter exatamente 8 números.");
+        }
 
         System.out.print("Email: ");
         String email = sc.nextLine();
@@ -226,94 +234,62 @@ public class MainMenu {
         String tell = sc.nextLine();
 
         // SQL
-
         String sql = """
-                INSERT INTO customer (
-                    customer_type,
-                    first_name,
-                    last_name,
-                    date_register,
-                    cep,
-                    email,
-                    tell,
-                    cpf,
-                    rg,
-                    birth_date,
-                    profession,
-                    cnpj,
-                    corporate_name,
-                    trade_name,
-                    state_registration,
-                    foundation_date
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """;
-
+            INSERT INTO customer (
+                customer_type, first_name, last_name, date_register, cep, email, tell,
+                cpf, rg, birth_date, profession,
+                cnpj, corporate_name, trade_name, state_registration, foundation_date
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """;
 
         try (
                 Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
-
             // DADOS GERAIS
-
             stmt.setString(1, typeStr);
-
             stmt.setString(2, firstName);
-
             stmt.setString(3, lastName);
-
             stmt.setObject(4, LocalDate.now());
-
             stmt.setString(5, cep);
-
             stmt.setString(6, email);
-
             stmt.setString(7, tell);
 
-
             // PESSOA FÍSICA
-
             if (typeStr.equals("PERSON")) {
-
                 System.out.print("CPF: ");
                 String cpf = sc.nextLine();
                 stmt.setString(8, cpf);
-
 
                 System.out.print("RG: ");
                 String rg = sc.nextLine();
                 stmt.setString(9, rg);
 
-
-                System.out.print("Data de Nascimento (AAAA-MM-DD): ");
-                String birthDate = sc.nextLine();
-
-                stmt.setObject(
-                        10,
-                        LocalDate.parse(birthDate)
-                );
-
+                // 2. TRATAMENTO DA DATA DE NASCIMENTO
+                LocalDate birthDate = null;
+                while (birthDate == null) {
+                    System.out.print("Data de Nascimento (AAAA-MM-DD): ");
+                    try {
+                        birthDate = LocalDate.parse(sc.nextLine());
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Erro: Formato de data inválido. Use o padrão AAAA-MM-DD (Ex: 1995-10-15).");
+                    }
+                }
+                stmt.setObject(10, birthDate);
 
                 System.out.print("Profissão: ");
                 String profession = sc.nextLine();
-
                 stmt.setString(11, profession);
 
-
                 // Campos de Pessoa Jurídica ficam NULL
-
                 stmt.setNull(12, java.sql.Types.VARCHAR);
                 stmt.setNull(13, java.sql.Types.VARCHAR);
                 stmt.setNull(14, java.sql.Types.VARCHAR);
                 stmt.setNull(15, java.sql.Types.VARCHAR);
                 stmt.setNull(16, java.sql.Types.DATE);
             }
-
-
-
             // PESSOA JURÍDICA
-
             else {
                 // Campos de Pessoa Física ficam NULL
                 stmt.setNull(8, java.sql.Types.VARCHAR);
@@ -323,51 +299,41 @@ public class MainMenu {
 
                 System.out.print("CNPJ: ");
                 String cnpj = sc.nextLine();
-
                 stmt.setString(12, cnpj);
 
                 System.out.print("Razão Social: ");
                 String corporateName = sc.nextLine();
-
                 stmt.setString(13, corporateName);
 
                 System.out.print("Nome Fantasia: ");
                 String tradeName = sc.nextLine();
-
                 stmt.setString(14, tradeName);
 
                 System.out.print("Inscrição Estadual: ");
                 String stateRegistration = sc.nextLine();
-
                 stmt.setString(15, stateRegistration);
 
-
-                System.out.print("Data de Fundação (AAAA-MM-DD): ");
-                String foundationDate = sc.nextLine();
-
-                stmt.setObject(
-                        16,
-                        LocalDate.parse(foundationDate)
-                );
+                // 3. TRATAMENTO DA DATA DE FUNDAÇÃO
+                LocalDate foundationDate = null;
+                while (foundationDate == null) {
+                    System.out.print("Data de Fundação (AAAA-MM-DD): ");
+                    try {
+                        foundationDate = LocalDate.parse(sc.nextLine());
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Erro: Formato de data inválido. Use o padrão AAAA-MM-DD (Ex: 2010-05-20).");
+                    }
+                }
+                stmt.setObject(16, foundationDate);
             }
 
-
             // EXECUTAR INSERT
-
             stmt.executeUpdate();
-
-            System.out.println(
-                    "\nCliente salvo com sucesso no banco de dados!"
-            );
+            System.out.println("\nCliente saved com sucesso no banco de dados!");
 
         } catch (SQLException e) {
-
-            System.err.println(
-                    "Erro ao salvar cliente: " + e.getMessage()
-            );
+            System.err.println("Erro ao salvar cliente no banco de dados: " + e.getMessage());
         }
     }
-
 
     // READ CLIENTS
 
